@@ -17,21 +17,22 @@ public class MainActivity extends AppCompatActivity {
     private ArrayAdapter<String> spinnerAdapter;
     private String spinnerOrderByArray[];
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        spinnerOrderByArray = new String[]{"NONE","MOST POPULAR", "HIGHEST RATED"};
+        spinnerOrderByArray = new String[]{ "Order By Rating", "Order By Popularity"};
         spinnerOrderBy = (Spinner) findViewById(R.id.spinnerOrderBy);
         gridViewThumnails = (GridView) findViewById(R.id.gridViewThumbnails);
-        spinnerAdapter = new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item, spinnerOrderByArray);
+        spinnerAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, spinnerOrderByArray);
         spinnerOrderBy.setAdapter(spinnerAdapter);
         gridViewThumnails.setAdapter(new ImageAdapter(this));
 
         spinnerOrderBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+            //http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=39ec4d7704b6310a7305e91435a56c83
             }
 
             @Override

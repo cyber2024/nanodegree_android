@@ -1,7 +1,6 @@
 package moviestreamer.ggg.com.moviestreamer;
 
 import android.content.Context;
-import android.media.Image;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -55,9 +53,8 @@ public class ImageAdapter extends BaseAdapter {
         ImageView imageView;
         if(convertView == null){
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(400,601));
+            imageView.setLayoutParams(new GridView.LayoutParams(430,601));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8,8,8,8);
         } else {
             imageView = (ImageView) convertView;
         }
@@ -65,9 +62,8 @@ public class ImageAdapter extends BaseAdapter {
         imageView.setImageResource(mThumbIds[position]);
         Picasso.with(mContext)
                 .load("http://image.tmdb.org/t/p/w185/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg")
-                .placeholder(R.drawable.ic_launcher)
+                .placeholder(R.drawable.ic_movie_placeholder)
                 .error(R.drawable.ic_launcher2)
-                .noFade().resize(185,278)
                 .into(imageView);
        // Log.w("Picasso called", "Let's see if it was called");
         return imageView;
