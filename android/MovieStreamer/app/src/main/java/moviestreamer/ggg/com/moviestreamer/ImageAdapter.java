@@ -1,7 +1,6 @@
 package moviestreamer.ggg.com.moviestreamer;
 
 import android.content.Context;
-import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,31 +10,25 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by relfenbein on 4/10/2015.
  */
 public class ImageAdapter extends BaseAdapter {
 
     private Context mContext;
-    private Picasso picasso;
+    private String[] posterPathArray = new String[1];
 
     public ImageAdapter(Context c){
         mContext = c;
-
-        picasso = new Picasso.Builder(mContext)
-                .listener(new Picasso.Listener() {
-
-                    @Override
-                    public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
-                        Log.e("Picasso Error", "Uri: "+uri.toString());
-                        exception.printStackTrace();
-                    }
-                }).build();
     }
 
     @Override
     public int getCount() {
-        return mThumbIds.length;
+        return posterPathArray.length;
     }
 
     @Override
@@ -59,23 +52,30 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-        imageView.setImageResource(mThumbIds[position]);
+        imageView.setImageResource(R.drawable.ic_hourglass128);
         Picasso.with(mContext)
-                .load("http://image.tmdb.org/t/p/w185/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg")
-                .placeholder(R.drawable.ic_movie_placeholder)
-                .error(R.drawable.ic_launcher2)
+                .load(posterPathArray[position])
+                .placeholder(R.drawable.ic_hourglass128)
+                .error(R.drawable.ic_404)
                 .into(imageView);
        // Log.w("Picasso called", "Let's see if it was called");
         return imageView;
     }
 
-    private Integer[] mThumbIds = {
-            R.drawable.ic_launcher, R.drawable.ic_launcher1, R.drawable.ic_launcher2,
-            R.drawable.ic_launcher, R.drawable.ic_launcher1, R.drawable.ic_launcher2,
-            R.drawable.ic_launcher, R.drawable.ic_launcher1, R.drawable.ic_launcher2,
-            R.drawable.ic_launcher, R.drawable.ic_launcher1, R.drawable.ic_launcher2,
-            R.drawable.ic_launcher, R.drawable.ic_launcher1, R.drawable.ic_launcher2,
-            R.drawable.ic_launcher, R.drawable.ic_launcher1, R.drawable.ic_launcher2,
-    };
+    public void updateURLs(JSONArray movieArray){
+        String[] tempPosterPaths = new String[movieArray.length()];
 
+        for(int i = 0; i <movieArray.length(); i++){
+            try {
+                JSONObject tempObj = movieArray.getJSONObject(i);
+                tempPosterPaths[i] = "http://image.tmdb.org/t/p/w185" +
+                        tempObj.getString("poster_path");
+            } catch (JSONException e){
+                Log.e("JSON EXCEPTION ERROR",e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        this.posterPathArray = tempPosterPaths;
+        this.notifyDataSetChanged();
+    }
 }

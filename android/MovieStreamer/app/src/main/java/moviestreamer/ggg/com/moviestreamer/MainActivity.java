@@ -1,6 +1,6 @@
 package moviestreamer.ggg.com.moviestreamer;
 
-import android.graphics.Bitmap;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Spinner;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,8 +28,11 @@ public class MainActivity extends AppCompatActivity {
 
     private Spinner spinnerOrderBy;
     private GridView gridViewThumnails;
-    private ArrayAdapter<String> spinnerAdapter;
+    public ArrayAdapter<String> spinnerAdapter;
     private String spinnerOrderByArray[];
+    public ImageAdapter imageAdapter;
+
+    private JSONArray movieDataJsonArray;
 
 
 
@@ -36,22 +40,56 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        spinnerOrderByArray = new String[]{ "Order By Rating", "Order By Popularity"};
+        spinnerOrderByArray = new String[]{ "Order By Popularity", "Order By Rating"};
         spinnerOrderBy = (Spinner) findViewById(R.id.spinnerOrderBy);
         gridViewThumnails = (GridView) findViewById(R.id.gridViewThumbnails);
+        gridViewThumnails.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("GridView OnItemClick", "Selected: " + position);
+                if (movieDataJsonArray != null) {
+                    Log.d("GridView", "MovieDataJsonArray not null");
+                    try {
+                        JSONObject tmpObj = movieDataJsonArray.getJSONObject(position);
+                        if (tmpObj != null) {
+
+                            Intent intent = new Intent(getApplicationContext(), MovieDetails.class);
+                            intent.putExtra("movieJsonString", tmpObj.toString());
+                            Log.d("GridView", tmpObj.toString());
+                            startActivity(intent);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
         spinnerAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, spinnerOrderByArray);
         spinnerOrderBy.setAdapter(spinnerAdapter);
-        gridViewThumnails.setAdapter(new ImageAdapter(this));
+        gridViewThumnails.setAdapter(imageAdapter = new ImageAdapter(this));
+
+            Spinner spinner = (Spinner) findViewById(R.id.spinnerOrderBy);
+            String spinnerValue = null;
+            if(spinner.getSelectedItem().toString() == "Order By Rating"){
+                spinnerValue = "rating";
+            }else {
+                spinnerValue = "popularity";
+            }
 
         spinnerOrderBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            //http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=39ec4d7704b6310a7305e91435a56c83
+                Spinner spinner = (Spinner) findViewById(R.id.spinnerOrderBy);
+                if (spinner.getSelectedItem().toString() == "Order By Rating") {
+                    getMovieData("vote_average");
+                } else {
+                    getMovieData("popularity");
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
     }
@@ -78,37 +116,26 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void getMovieData(){
-        Spinner spinner = (Spinner) findViewById(R.id.spinnerOrderBy);
-        String spinnerValue = null;
-        if(spinner.getSelectedItem().toString() == "Order By Rating"){
-            spinnerValue = "rating";
-        }else {
-            spinnerValue = "popularity";
-        }
+    public void getMovieData(String orderBy){
         FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
-        fetchMoviesTask.initiateExecute(spinnerValue);
+        fetchMoviesTask.execute(orderBy);
     }
 
-    public class FetchMoviesTask extends AsyncTask<String, Void, String[]>{
-        private String spinnerValue = null;
 
-        public void initiateExecute(String spinnerVal){
-            spinnerValue = spinnerVal;
-            this.execute();
-        }
 
-        @Override
+    public class FetchMoviesTask extends AsyncTask<String, Void, String>{
+        private JSONArray movieArray;
+            @Override
         protected String doInBackground(String... params) {
 
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
             String movieJsonStr = null;
 
+
             try{
-                URL url = new URL(
-                        "http://api.themoviedb.org/3/discover/movie?sort_by=" +spinnerValue+
-                                ".desc&api_key=39ec4d7704b6310a7305e91435a56c83");
+                URL url = new URL("http://api.themoviedb.org/3/discover/movie?sort_by=" +params[0]+
+                        ".desc&api_key="+getString(R.string.picasso_api_key));
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
@@ -123,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 reader = new BufferedReader(new InputStreamReader(inputStream));
 
                 String line;
-                while((line = reader.readLine()) != null)){
+                while((line = reader.readLine()) != null){
                     buffer.append(line + '\n');
                 }
                 if(buffer.length() == 0){
@@ -146,13 +173,24 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
-            return getMovieDataFromJson(movieJsonStr);
+                try {
+                    getMovieDataFromJson(movieJsonStr);
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+            return movieJsonStr;
+        }
+        public void getMovieDataFromJson(String jsonString) throws JSONException {
+            JSONObject movies = new JSONObject(jsonString);
+            movieArray = movies.getJSONArray("results");
+
         }
 
-        public String[] getMovieDataFromJson(String jsonString)throws JSONException {
-
-                JSONObject movieJson = new JSONObject(jsonString);
-
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            movieDataJsonArray = movieArray;
+            imageAdapter.updateURLs(movieArray);
         }
     }
 }
