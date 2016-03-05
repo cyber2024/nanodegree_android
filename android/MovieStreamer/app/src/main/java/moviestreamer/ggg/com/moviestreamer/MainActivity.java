@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Spinner;
 
 import org.json.JSONArray;
@@ -23,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
                             intent.putExtra("movieJsonString", tmpObj.toString());
                             Log.d("GridView", tmpObj.toString());
                             startActivity(intent);
+
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -92,6 +96,10 @@ public class MainActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+
+
+
     }
 
     @Override
@@ -135,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
             try{
                 URL url = new URL("http://api.themoviedb.org/3/discover/movie?sort_by=" +params[0]+
-                        ".desc&api_key="+getString(R.string.picasso_api_key));
+                        ".desc&api_key="+getString(R.string.themoviedb_apikey));
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();

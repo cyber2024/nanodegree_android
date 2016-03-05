@@ -1,78 +1,143 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
              android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
              android:paddingRight="@dimen/activity_horizontal_margin"
              android:paddingTop="@dimen/activity_vertical_margin"
              android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
-             android:orientation="vertical">
+            android:scrollbars="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:layout_weight="1.2"
-        >
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:id="@+id/poster"
-            android:layout_weight="2"
-            android:src="@drawable/ic_hourglass128"
-            />
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="1"
-            android:padding="10dp"
-            android:gravity="center">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Year"
-                android:textSize="25dp"
-                android:id="@+id/year"
-                android:textColor="@color/Black"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20dp"
-                android:text="Rating"
-                android:id="@+id/rating"
-                android:textColor="@color/Black"/>
-        </LinearLayout>
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:padding="0dp"
+            android:text="The Day The Earth Stood Still"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/Black"
+            android:layout_gravity="center_horizontal"/>
 
-    </LinearLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.8">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="vertical">
+            android:layout_height="400dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
-               <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="The Day The Earth Stood Still"
-                    android:id="@+id/title"
-                    android:textSize="35dp"
-                    android:textColor="@color/Black"
-                    android:padding="0dp"
-                    android:gravity="center_vertical"/>
+            <ImageView
+                android:id="@+id/poster"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:src="@drawable/ic_hourglass128" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="10dp">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:id="@+id/year"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Synopsis goes here, discussing the film"
-                    android:textSize="18dp"
+                    android:text="Year"
                     android:textColor="@color/Black"
-                    android:id="@+id/synopsis"
-                    android:scrollbars="vertical"/>
+                    android:textSize="25dp" />
+
+                <TextView
+                    android:id="@+id/rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rating"
+                    android:textColor="@color/Black"
+                    android:textSize="20dp" />
+            </LinearLayout>
+
+
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/synopsisId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SYNOPSIS"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/synopsis"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:text="@string/synopsis"
+                android:textColor="@color/Black"
+                android:textSize="18dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/llTrailerLoadingIcon"
+                android:gravity="center_vertical">
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Loading trailer..." />
+            </LinearLayout>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Loading trailer..."
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/btnTrailer"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"/>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="REVIEWS"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/llReviewsLoadingIcon"
+                android:gravity="center_vertical">
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Loading reviews..." />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/llReviews"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
 
